@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres
-    container_name: "checklist-database"
+    container_name: "notify-location-database"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password

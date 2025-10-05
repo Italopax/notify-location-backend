@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres
+    container_name: "checklist-database"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    container_name: "notify-location-backend"
+    restart: always
+    build: .
+    ports:
+      - "3030:3030"
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_NAME: postgres
+      DATABASE_USERNAME: postgres
+      DATABASE_PORT: 5432
+      DATABASE_PASSWORD: password
+      JWT_SECRET: cqZS7ZpteTA7CqUCYbIBnr8apJEvB6yNKEMNLy1sK6izKEP6t09Qml1ewmvCMRgC
+      ACCESS_TOKEN_EXPIRATION: 360000
+      REFRESH_TOKEN_EXPIRATION: 2592000000
+      EMAIL_SENDER: italopax80@gmail.com
+      EMAIL_SENDER_PASSWORD: kshf ngjm rapa olwb
+      EMAIL_SENDER_HOST: smtp.gmail.com
+      EMAIL_SENDER_PORT: 465
+      EMAIL_SENDER_SECURE: true
+      DEBBUG: true
+      CORS_ORIGINS_ALLOWED: http://localhost:3000
+
+volumes:
+  postgres_data:

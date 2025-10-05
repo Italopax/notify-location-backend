@@ -11,6 +11,7 @@
     "create:migration": "npx typeorm migration:create ./src/database/migrations/$npm_config_name"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "inversify": "^7.10.2",
     "inversify-express-utils": "^6.5.0",

@@ -1,8 +1,12 @@
 import 'reflect-metadata';
+import "dotenv/config";
 import express from 'express';
 import { AppDataSource } from '@database/config';
+import { initializeEnvs } from '@utils/constants';
 
 (async () => {
+  initializeEnvs(process.env);
+
   const app = express();
 
   console.log('INITIALIZING DATABASE');

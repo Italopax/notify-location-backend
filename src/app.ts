@@ -1,11 +1,21 @@
-import express from "express";
+import 'reflect-metadata';
+import express from 'express';
+import { AppDataSource } from '@database/config';
 
-const app = express();
+(async () => {
+  const app = express();
 
-app.get('/', (req, res) =>  {
-  res.status(200).send({});
-});
+  console.log('INITIALIZING DATABASE');
+  await AppDataSource.initialize();
+  console.log('INITIALIZED DATABASE');
 
-app.listen('3000', () => {
-  console.log('listen');
+  app.get('/', (req, res) =>  {
+    res.status(200).send({});
+  });
+
+  app.listen('3000', () => {
+    console.log('listen');
+  });
+})().catch((error: Error) => {
+  console.error(error);
 });

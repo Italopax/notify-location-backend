@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import "dotenv/config";
+import 'dotenv/config';
 import express from 'express';
 import { CreateAppDataSource } from '@database/config';
 import { getEnv, initializeEnvs } from '@utils/constants';

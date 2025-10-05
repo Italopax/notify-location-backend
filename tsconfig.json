@@ -11,7 +11,17 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots" : ["./src/@types", "./node_modules/@types"],
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@services/*": ["src/services/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@database/*": ["src/database/*"],
+      "@models/*": ["src/models/*"],
+      "@utils/*": ["src/utils/*"],
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]

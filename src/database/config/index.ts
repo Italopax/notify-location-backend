@@ -1,8 +1,10 @@
-import { Constants } from '@src/utils/constants';
+import { Constants, getEnv } from '@src/utils/constants';
 import { join } from 'node:path';
 import { DataSource } from 'typeorm';
 
-export const CreateAppDataSource = (envs: Constants['database']) => {
+export const CreateAppDataSource = (envs?: Constants['database']) => {
+  if (!envs) envs = getEnv().database; 
+
   return new DataSource({
     type: 'postgres',
     host: envs.host,

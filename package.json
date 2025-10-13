@@ -11,15 +11,17 @@
     "create:migration": "npx typeorm migration:create ./src/database/migrations/$npm_config_name"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "inversify": "^7.10.2",
+    "helmet": "^8.1.0",
+    "http-status": "^2.1.0",
     "inversify-express-utils": "^6.5.0",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.27"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.6.2",
     "nodemon": "^3.1.10",

@@ -1,6 +1,7 @@
 export class Constants {
   public debbug: boolean;
   public corsOriginsAllowed: string;
+  public customAppPort: string;
 
   public database: {
     host: string;
@@ -27,6 +28,7 @@ export class Constants {
   constructor(props: Record<string, string> ) {
     this.debbug = props.DEBBUG === 'true',
     this.corsOriginsAllowed = props.CORS_ORIGINS_ALLOWED,
+    this.customAppPort = props.CUSTOM_APP_PORT ?? '3000',
 
     this.database = {
       host: props.DATABASE_HOST,

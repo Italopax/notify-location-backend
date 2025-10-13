@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
+    "lib": ["ES2022", "DOM"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -16,7 +17,7 @@
       "@src/*": ["src/*"],
       "@controllers/*": ["src/controllers/*"],
       "@services/*": ["src/services/*"],
-      "@repositories/*": ["src/repositories/*"],
+      "@repositories/*": ["src/database/repositories/*"],
       "@database/*": ["src/database/*"],
       "@models/*": ["src/models/*"],
       "@utils/*": ["src/utils/*"],

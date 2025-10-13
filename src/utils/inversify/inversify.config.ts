@@ -1,0 +1,20 @@
+import "reflect-metadata";
+import { Container } from "inversify";
+import { TYPES } from "./inversify-types";
+
+import { IUserRepository } from "@src/database/repositories/interface/user.interface";
+import { UserRepository } from "@src/database/repositories";
+
+import { IUserService } from "@src/services/interface/user.interface";
+import { UserService } from "@src/services";
+import { DataSource } from "typeorm";
+
+const container = new Container();
+
+container.bind<IUserRepository>(TYPES.repositories.USER_REPOSITORY).to(UserRepository).inSingletonScope();
+container.bind<IUserService>(TYPES.services.USER_SERVICE).to(UserService).inSingletonScope();
+
+const { DatabaseProvider } = require('../../database/config/index');
+container.bind<DataSource>(TYPES.DATABASE_SOURCE).toConstantValue(DatabaseProvider.getDataSource());
+
+export { container };

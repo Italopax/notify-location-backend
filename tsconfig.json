@@ -19,7 +19,7 @@
       "@services/*": ["src/services/*"],
       "@repositories/*": ["src/database/repositories/*"],
       "@database/*": ["src/database/*"],
-      "@models/*": ["src/models/*"],
+      "@domain/*": ["src/domain/*"],
       "@utils/*": ["src/utils/*"],
     }
   },

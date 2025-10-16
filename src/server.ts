@@ -7,6 +7,8 @@ import express from 'express';
 import { getEnv } from "./utils/constants";
 import { container } from "./utils/inversify/inversify.config";
 import { InversifyExpressServer } from "inversify-express-utils";
+import { errorHandler } from './utils/errors';
+import httpStatus from "http-status";
 
 export class Server {
   static async initServer() {
@@ -17,6 +19,17 @@ export class Server {
       app.use(helmet());
       app.use(cors({ origin: '*' }));
     });
+
+    server.setErrorConfig((app): void => {
+      app.use(errorHandler);
+  
+      app.use((req, res, next): void => {
+        res.status(httpStatus.NOT_FOUND).json({
+          errorMessage: 'Page not found',
+        });
+      });
+    });
+
 
     const app = server.build()
 

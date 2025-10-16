@@ -28,9 +28,7 @@ export class UserRepository implements IUserRepository {
   }
 
   public async create(user: TUserCreateInput, selectAttributes?: SelectUserAttributes): Promise<TUserModel> {
-    console.log('this.repository', this.repository);
     const userObject = this.repository.create(user);
-    console.log('this.repository2');
     const { id } = await this.repository.save(userObject);
 
     return this.selectOne({ id }, selectAttributes);

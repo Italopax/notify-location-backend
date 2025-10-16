@@ -13,7 +13,7 @@ export class UserController extends BaseHttpController implements interfaces.Con
   }
 
   @httpPost('/')
-  public async create (
+  private async create (
     @requestBody() userData: TUserCreateInput,
     response: Response,
   ): Promise<Partial<TUserModel>> {

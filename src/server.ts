@@ -25,7 +25,7 @@ export class Server {
   
       app.use((req, res, next): void => {
         res.status(httpStatus.NOT_FOUND).json({
-          errorMessage: 'Page not found',
+          errorMessage: 'Route not found',
         });
       });
     });

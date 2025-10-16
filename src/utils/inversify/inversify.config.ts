@@ -8,6 +8,7 @@ import { UserRepository } from "@src/database/repositories";
 import { IUserService } from "@src/services/interface/user.interface";
 import { UserService } from "@src/services";
 import { DataSource } from "typeorm";
+import { EncryptionAdapter } from "@src/adapters/encryption.adapter";
 
 const container = new Container();
 
@@ -16,5 +17,7 @@ container.bind<IUserService>(TYPES.services.USER_SERVICE).to(UserService).inSing
 
 const { DatabaseProvider } = require('../../database/config/index');
 container.bind<DataSource>(TYPES.DATABASE_SOURCE).toConstantValue(DatabaseProvider.getDataSource());
+
+container.bind<EncryptionAdapter>(TYPES.adapters.ENCRYPTION_ADAPTER).to(EncryptionAdapter).inSingletonScope();
 
 export { container };

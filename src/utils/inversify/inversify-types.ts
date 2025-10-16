@@ -5,5 +5,8 @@ export const TYPES = {
   },
   repositories: {
     USER_REPOSITORY: 'USER_REPOSITORY',
+  },
+  adapters: {
+    ENCRYPTION_ADAPTER: 'ENCRYPTION_ADAPTER',
   }
 }

@@ -1,4 +1,4 @@
-import { SelectUserAttributes, TUserCreateInput, TUserModel } from "@src/models/user.model";
+import { SelectUserAttributes, TUserCreateInput, TUserModel } from "@src/domain/models/user.model";
 import { IUserRepository } from "./interface/user.interface";
 import { DataSource, FindOptionsWhere, Repository } from "typeorm";
 import { UserEntity } from "../entities/user.entity";
@@ -19,7 +19,14 @@ export class UserRepository implements IUserRepository {
       ...(selectAttributes && { select: { ...selectAttributes }})
     });
   }
-  
+
+  public async selectOneOrFail(where: FindOptionsWhere<UserEntity>, selectAttributes?: SelectUserAttributes): Promise<TUserModel> {
+    return this.repository.findOneOrFail({
+      where,
+      ...(selectAttributes && { select: { ...selectAttributes }})
+    });
+  }
+
   public async selectMany(where: FindOptionsWhere<UserEntity>, selectAttributes?: SelectUserAttributes): Promise<TUserModel[]> {
     return this.repository.find({
       where,

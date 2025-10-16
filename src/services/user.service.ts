@@ -11,7 +11,7 @@ import { EncryptionAdapter } from "@src/adapters/encryption.adapter";
 export class UserService implements IUserService {
   constructor(
     @inject(TYPES.repositories.USER_REPOSITORY) private readonly userRepository: IUserRepository,
-    @inject(TYPES.adapters.ENCRYPTION_ADAPTER) private readonly bcrypAdapter: EncryptionAdapter,
+    @inject(TYPES.adapters.ENCRYPTION_ADAPTER) private readonly encryptionAdapter: EncryptionAdapter,
   ) {}
 
   public async createUser (userData: TUserCreateInput): Promise<Partial<TUserModel>> {
@@ -28,7 +28,7 @@ export class UserService implements IUserService {
       throw new BadRequest(Errors.USER_ALREADY_CREATED);
     }
 
-    const hashPassword = this.bcrypAdapter.generateHash(userData.password);
+    const hashPassword = this.encryptionAdapter.generateHash(userData.password);
 
     return this.userRepository.create({
       ...userData,

@@ -9,16 +9,16 @@ import { IUserRepository } from "@src/database/repositories/interface/user.inter
 const ConstantEnvs = getEnv();
 
 export const auth = async (request: Request, response: Response, next: NextFunction) => {
-  const { authorization } = request.headers;
-  const accessToken = authorization.split(' ')[1];
-
-  if (!accessToken) throw new Unauthorized(Errors.USER_UNAUTHORIZED);
-
-  const userRepository: IUserRepository = container.get(TYPES.repositories.USER_REPOSITORY);
-
   try {
+    const { authorization } = request.headers;
+    const accessToken = authorization.split(' ')[1];
+
+    if (!accessToken) throw new Unauthorized(Errors.USER_UNAUTHORIZED);
+
+    const userRepository: IUserRepository = container.get(TYPES.repositories.USER_REPOSITORY);
+  
     const payload = jwt.verify(accessToken, ConstantEnvs.jwt.secretKey) as jwt.JwtPayload;
-    console.log('payload:', payload)
+
     const user = await userRepository.selectOneOrFail({
       id: payload.userId,
     });
@@ -29,6 +29,6 @@ export const auth = async (request: Request, response: Response, next: NextFunct
 
     next();
   } catch (error) {
-    throw new Unauthorized(Errors.USER_UNAUTHORIZED);
+    return next(new Unauthorized(Errors.USER_UNAUTHORIZED));
   }
 };

@@ -30,7 +30,6 @@ export class Server {
       });
     });
 
-
     const app = server.build()
 
     const port = getEnv().customAppPort;

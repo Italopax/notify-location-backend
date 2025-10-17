@@ -9,7 +9,8 @@ import { IUserRepository } from "@src/database/repositories/interface/user.inter
 const ConstantEnvs = getEnv();
 
 export const auth = async (request: Request, response: Response, next: NextFunction) => {
-  const accessToken = request.headers.authorization;
+  const { authorization } = request.headers;
+  const accessToken = authorization.split(' ')[1];
 
   if (!accessToken) throw new Unauthorized(Errors.USER_UNAUTHORIZED);
 
@@ -17,6 +18,7 @@ export const auth = async (request: Request, response: Response, next: NextFunct
 
   try {
     const payload = jwt.verify(accessToken, ConstantEnvs.jwt.secretKey) as jwt.JwtPayload;
+    console.log('payload:', payload)
     const user = await userRepository.selectOneOrFail({
       id: payload.userId,
     });

@@ -1,5 +1,7 @@
+import { Session } from "@src/domain/interfaces";
 import { TUserCreateInput, TUserModel } from "@src/domain/models/user.model";
 
 export interface IUserService {
-  createUser (userData: TUserCreateInput): Promise<Partial<TUserModel>>
+  createUser (userData: TUserCreateInput): Promise<Partial<TUserModel>>;
+  getMe ({ userId }: Session): Promise<Partial<TUserModel>>;
 }

@@ -6,6 +6,7 @@ import { IUserRepository } from "@src/database/repositories/interface/user.inter
 import { BadRequest, Errors } from "@src/utils/errors";
 import { validateEmail } from "@src/utils";
 import { EncryptionAdapter } from "@src/adapters/encryption.adapter";
+import { Session } from "@domain/interfaces";
 
 @injectable()
 export class UserService implements IUserService {
@@ -34,5 +35,21 @@ export class UserService implements IUserService {
       ...userData,
       password: hashPassword,
     });
+  }
+
+  public async getMe ({ userId }: Session): Promise<Partial<TUserModel>> {
+    console.log('userId:', userId)
+
+    if (!userId) {
+      throw new BadRequest(Errors.INVALID_PARAMS);
+    }
+
+    const user = await this.userRepository.selectOne({ id: userId });
+
+    if (!user) {
+      throw new BadRequest(Errors.USER_NOT_FOUND);
+    }
+
+    return user;
   }
 }

@@ -38,13 +38,14 @@ export class UserService implements IUserService {
   }
 
   public async getMe ({ userId }: Session): Promise<Partial<TUserModel>> {
-    console.log('userId:', userId)
-
     if (!userId) {
       throw new BadRequest(Errors.INVALID_PARAMS);
     }
 
-    const user = await this.userRepository.selectOne({ id: userId });
+    const user = await this.userRepository.selectOne(
+      { id: userId },
+      { name: true, email: true }
+    );
 
     if (!user) {
       throw new BadRequest(Errors.USER_NOT_FOUND);

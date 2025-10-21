@@ -10,5 +10,6 @@ export const TYPES = {
   adapters: {
     ENCRYPTION_ADAPTER: 'ENCRYPTION_ADAPTER',
     JWT_ADAPTER: 'JWT_ADAPTER',
+    EMAIL_ADAPTER: 'EMAIL_ADAPTER',
   }
 }

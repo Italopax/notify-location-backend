@@ -37,12 +37,15 @@ export class UserService implements IUserService {
     
     await this.sendUserEmailVerificationCode(userData.email, verificationCode);
 
-    return this.userRepository.create({
-      ...userData,
-      status: UserStatus.PENDING_VALIDATION,
-      verificationCode,
-      password: hashPassword,
-    });
+    return this.userRepository.create(
+      {
+        ...userData,
+        status: UserStatus.PENDING_VALIDATION,
+        verificationCode,
+        password: hashPassword,
+      },
+      { name: true, email: true, status: true }
+    );
   }
 
   public async getMe ({ userId }: Session): Promise<Partial<TUserModel>> {

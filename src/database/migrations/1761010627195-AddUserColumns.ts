@@ -1,3 +1,4 @@
+import { UserStatus } from "@src/domain/enums";
 import { MigrationInterface, QueryRunner, TableColumn } from "typeorm";
 
 export class AddStatusColumn1761010627195 implements MigrationInterface {
@@ -11,12 +12,13 @@ export class AddStatusColumn1761010627195 implements MigrationInterface {
         name: 'status',
         type: 'int',
         isNullable: false,
+        default: UserStatus.PENDING_VALIDATION,
       }));
     }
 
     const columnVerificationCode = await queryRunner.hasColumn(this.tableName, 'verificationCode');
 
-    if (columnVerificationCode) {
+    if (!columnVerificationCode) {
       await queryRunner.addColumn(this.tableName, new TableColumn({
         name: 'verificationCode',
         type: 'varchar',

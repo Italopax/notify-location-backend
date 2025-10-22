@@ -1,12 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { getEnv } from "../constants";
 import { Errors, Unauthorized } from "@utils/errors";
 import { container } from "@utils/inversify/inversify.config";
 import { TYPES } from "@utils/inversify/inversify-types";
 import { IUserRepository } from "@src/database/repositories/interface/user.interface";
+import { JwtAdapter } from "@src/adapters/jwt.adapter";
 
-const ConstantEnvs = getEnv();
 
 export const auth = async (request: Request, response: Response, next: NextFunction) => {
   try {
@@ -16,12 +14,11 @@ export const auth = async (request: Request, response: Response, next: NextFunct
     if (!accessToken) throw new Unauthorized(Errors.USER_UNAUTHORIZED);
 
     const userRepository: IUserRepository = container.get(TYPES.repositories.USER_REPOSITORY);
+    const jwtAdapter: JwtAdapter = container.get(TYPES.adapters.JWT_ADAPTER);
   
-    const payload = jwt.verify(accessToken, ConstantEnvs.jwt.secretKey) as jwt.JwtPayload;
+    const payload = jwtAdapter.verify(accessToken);
 
-    const user = await userRepository.selectOneOrFail({
-      id: payload.userId,
-    });
+    const user = await userRepository.selectOneOrFail({ id: payload.userId }, { id: true });
 
     request.session = {
       userId: user.id,

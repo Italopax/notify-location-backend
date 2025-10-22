@@ -5,7 +5,9 @@ import { TYPES } from "@src/utils/inversify/inversify-types";
 import { auth } from "@src/utils/middlewares/auth";
 import { Request } from "express";
 import { inject } from "inversify";
-import { BaseHttpController, controller, httpGet, httpPost, interfaces, requestBody } from "inversify-express-utils";
+import { BaseHttpController, controller, httpGet, httpPost, interfaces, request, requestBody } from "inversify-express-utils";
+import httpStatus from "http-status";
+import { StatusCodeResult } from "inversify-express-utils/lib/cjs/results";
 
 @controller('/user')
 export class UserController extends BaseHttpController implements interfaces.Controller {
@@ -33,5 +35,22 @@ export class UserController extends BaseHttpController implements interfaces.Con
     { session }: Request,
   ): Promise<Partial<TUserModel>> {
     return this.userService.getMe(session);
+  }
+
+  @httpPost('/validate-email', auth)
+  private async verifyEmailToken (
+    @request() { session }: Request,
+    @requestBody() { verificationCode }: { verificationCode: string }
+  ): Promise<StatusCodeResult> {
+    await this.userService.validateEmail(session, verificationCode);
+    return this.statusCode(httpStatus.NO_CONTENT);
+  }
+
+  @httpPost('/resend-verification-code', auth)
+  private async resendVerificationCode (
+    { session }: Request,
+  ): Promise<StatusCodeResult> {
+    await this.userService.resendVerificationCode(session);
+    return this.statusCode(httpStatus.NO_CONTENT);
   }
 }

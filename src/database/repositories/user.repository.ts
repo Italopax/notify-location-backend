@@ -34,7 +34,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  public async create(user: TUserCreateInput, selectAttributes?: SelectUserAttributes): Promise<TUserModel> {
+  public async create(user: Partial<TUserModel>, selectAttributes?: SelectUserAttributes): Promise<TUserModel> {
     const userObject = this.repository.create(user);
     const { id } = await this.repository.save(userObject);
 

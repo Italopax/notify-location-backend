@@ -6,6 +6,6 @@ export interface IUserRepository {
   selectOne(where: FindOptionsWhere<UserEntity>, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
   selectOneOrFail(where: FindOptionsWhere<UserEntity>, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
   selectMany(where: FindOptionsWhere<UserEntity>, selectAttributes?: SelectUserAttributes): Promise<TUserModel[]>;
-  create(user: TUserCreateInput, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
+  create(user: Partial<TUserModel>, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
   update(userId: string, updateData: Partial<TUserModel>, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
 }

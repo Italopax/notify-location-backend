@@ -1,4 +1,3 @@
-import { Session } from "@src/domain/interfaces";
 import { TUserCreateInput, TUserModel } from "@src/domain/models/user.model";
 import { IUserService } from "@src/services/interface/user.interface";
 import { TYPES } from "@src/utils/inversify/inversify-types";

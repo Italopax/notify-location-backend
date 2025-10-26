@@ -17,6 +17,8 @@ export const auth = async (request: Request, response: Response, next: NextFunct
   
     const payload = jwtAdapter.verify(accessToken);
 
+    if (!payload.userId) throw new Unauthorized(Errors.USER_UNAUTHORIZED);
+
     const user = await userRepository.selectOneOrFail({ id: payload.userId }, { id: true });
 
     request.session = {

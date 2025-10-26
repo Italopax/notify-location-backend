@@ -21,6 +21,7 @@ export enum Errors {
   ITEMS_GROUP_NOT_FOUND = "Grupo de itens não encontrado.",
   ITEM_WITH_THIS_NAME_ALREADY_CREATED = "Item com mesmo nome já criado.",
   ITEM_NOT_FOUND = "Item não encontrado",
+  USER_DATA_SENT_IS_SAME_AS_ACTUAL_DATA = "Dados enviados são os mesmos que já estão salvos.",
 }
 
 enum ErrorsName {
@@ -86,7 +87,7 @@ export function errorHandler(error: any, req: Request, res: Response, next: Next
       res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         errorMessage: Errors.INTERNAL_SERVER_ERROR,
         status: httpStatus.INTERNAL_SERVER_ERROR,
-        type: Errors.INTERNAL_SERVER_ERROR,
+        type: ErrorsName.INTERNAL_SERVER_ERROR,
         ...(getEnv().debbug && { stack: error.stack })
       });
   }

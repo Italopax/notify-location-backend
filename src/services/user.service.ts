@@ -65,7 +65,7 @@ export class UserService implements IUserService {
     return user;
   }
 
-  public validateEmail = async (session: Session, verificationCode: string): Promise<void> => {
+  public async validateEmail (session: Session, verificationCode: string): Promise<void> {
     const { userId } = session;
 
     const user = await this.userRepository.selectOne(
@@ -88,7 +88,7 @@ export class UserService implements IUserService {
     );
   }
 
-  public resendVerificationCode = async (session: Session): Promise<void> => {
+  public async resendVerificationCode (session: Session): Promise<void> {
     const { userId } = session;
 
     const user = await this.userRepository.selectOne(

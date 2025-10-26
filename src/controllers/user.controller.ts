@@ -31,7 +31,7 @@ export class UserController extends BaseHttpController implements interfaces.Con
 
   @httpGet('/me', auth)
   private async getMe (
-    { session }: Request,
+    @request() { session }: Request,
   ): Promise<Partial<TUserModel>> {
     return this.userService.getMe(session);
   }
@@ -47,7 +47,7 @@ export class UserController extends BaseHttpController implements interfaces.Con
 
   @httpPost('/resend-verification-code', auth)
   private async resendVerificationCode (
-    { session }: Request,
+    @request() { session }: Request,
   ): Promise<StatusCodeResult> {
     await this.userService.resendVerificationCode(session);
     return this.statusCode(httpStatus.NO_CONTENT);

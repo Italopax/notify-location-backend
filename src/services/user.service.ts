@@ -56,7 +56,7 @@ export class UserService implements IUserService {
 
     const user = await this.userRepository.selectOne(
       { id: userId },
-      { name: true, email: true }
+      { name: true, email: true, status: true }
     );
 
     if (!user) {

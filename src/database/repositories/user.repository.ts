@@ -1,4 +1,4 @@
-import { SelectUserAttributes, TUserCreateInput, TUserModel } from "@src/domain/models/user.model";
+import { SelectUserAttributes, TUserModel } from "@src/domain/models/user.model";
 import { IUserRepository } from "./interface/user.interface";
 import { DataSource, FindOptionsWhere, Repository } from "typeorm";
 import { UserEntity } from "../entities/user.entity";

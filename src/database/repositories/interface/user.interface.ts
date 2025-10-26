@@ -1,5 +1,5 @@
 import { UserEntity } from "@src/database/entities/user.entity";
-import { SelectUserAttributes, TUserCreateInput, TUserModel } from "@src/domain/models/user.model";
+import { SelectUserAttributes, TUserModel } from "@src/domain/models/user.model";
 import { FindOptionsWhere } from "typeorm";
 
 export interface IUserRepository {

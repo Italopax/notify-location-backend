@@ -8,4 +8,5 @@ export interface IUserRepository {
   selectMany(where: FindOptionsWhere<UserEntity>, selectAttributes?: SelectUserAttributes): Promise<TUserModel[]>;
   create(user: Partial<TUserModel>, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
   update(userId: string, updateData: Partial<TUserModel>, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
+  softDelete(userId: string): Promise<void>;
 }

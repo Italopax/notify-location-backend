@@ -7,4 +7,5 @@ export interface IUserService {
   getMe ({ userId }: Session): Promise<Partial<TUserModel>>;
   validateEmail (session: Session, verificationCode: string): Promise<void>;
   resendVerificationCode (session: Session): Promise<void>;
+  removeUser (session: Session): Promise<void>;
 }

@@ -45,4 +45,8 @@ export class UserRepository implements IUserRepository {
     await this.repository.update(userId, updateData);
     return this.selectOne({ id: userId }, selectAttributes);
   }
+
+  public async softDelete(userId: string): Promise<void> {
+    await this.repository.softDelete({ id: userId });
+  }
 }

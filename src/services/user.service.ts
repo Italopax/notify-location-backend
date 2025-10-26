@@ -107,6 +107,21 @@ export class UserService implements IUserService {
     await this.userRepository.update(user.id, { verificationCode });
   }
 
+  public async removeUser (session: Session): Promise<void> {
+    const { userId } = session;
+
+    if (!userId) throw new BadRequest(Errors.INVALID_PARAMS);
+
+    const user = await this.userRepository.selectOne(
+      { id: userId },
+      { id: true, email: true, status: true }
+    );
+
+    if (!user) throw new BadRequest(Errors.USER_NOT_FOUND);
+
+    await this.userRepository.softDelete(user.id);
+  }
+
   private async sendEmail({
     userEmail,
     title,

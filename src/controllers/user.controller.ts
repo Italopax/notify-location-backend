@@ -4,7 +4,7 @@ import { TYPES } from "@src/utils/inversify/inversify-types";
 import { auth } from "@src/utils/middlewares/auth";
 import { Request } from "express";
 import { inject } from "inversify";
-import { BaseHttpController, controller, httpGet, httpPost, interfaces, request, requestBody } from "inversify-express-utils";
+import { BaseHttpController, controller, httpDelete, httpGet, httpPost, interfaces, request, requestBody } from "inversify-express-utils";
 import httpStatus from "http-status";
 import { StatusCodeResult } from "inversify-express-utils/lib/cjs/results";
 
@@ -50,6 +50,14 @@ export class UserController extends BaseHttpController implements interfaces.Con
     @request() { session }: Request,
   ): Promise<StatusCodeResult> {
     await this.userService.resendVerificationCode(session);
+    return this.statusCode(httpStatus.NO_CONTENT);
+  }
+
+  @httpDelete('/', auth)
+  private async deleteUser (
+    @request() { session }: Request,
+  ): Promise<StatusCodeResult> {
+    await this.userService.removeUser(session);
     return this.statusCode(httpStatus.NO_CONTENT);
   }
 }

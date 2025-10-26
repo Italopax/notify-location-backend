@@ -1,10 +1,10 @@
-import { TUserCreateInput, TUserModel } from "@src/domain/models/user.model";
+import { TUserCreateInput, TUserModel, TUserUpdateInput } from "@src/domain/models/user.model";
 import { IUserService } from "@src/services/interface/user.interface";
 import { TYPES } from "@src/utils/inversify/inversify-types";
 import { auth } from "@src/utils/middlewares/auth";
 import { Request } from "express";
 import { inject } from "inversify";
-import { BaseHttpController, controller, httpDelete, httpGet, httpPost, interfaces, request, requestBody } from "inversify-express-utils";
+import { BaseHttpController, controller, httpDelete, httpGet, httpPost, httpPut, interfaces, request, requestBody } from "inversify-express-utils";
 import httpStatus from "http-status";
 import { StatusCodeResult } from "inversify-express-utils/lib/cjs/results";
 
@@ -34,6 +34,21 @@ export class UserController extends BaseHttpController implements interfaces.Con
     @request() { session }: Request,
   ): Promise<Partial<TUserModel>> {
     return this.userService.getMe(session);
+  }
+
+  @httpPut('/', auth)
+  private async update (
+    @request() { session }: Request,
+    @requestBody() userData: TUserUpdateInput,
+  ): Promise<StatusCodeResult> {
+    const bodyInfos: TUserUpdateInput = {
+      email: userData.email,
+      name: userData.name,
+      password: userData.password,
+    };
+
+    await this.userService.updateUser(session, bodyInfos);
+    return this.statusCode(httpStatus.NO_CONTENT);
   }
 
   @httpPost('/validate-email', auth)

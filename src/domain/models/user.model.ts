@@ -10,6 +10,6 @@ export type TUserModel = TBaseModel & {
 }
 
 export type TUserCreateInput = Required<Pick<TUserModel, 'email' | 'name' | 'password'>>;
-export type TUserUpdateInput = Partial<Pick<TUserModel, 'email' | 'name' | 'password'>>;
+export type TUserUpdateInput = Partial<Pick<TUserModel, 'email' | 'name' | 'password' | 'verificationCode' | 'status'>>;
 
 export type SelectUserAttributes = Partial<Record<keyof UserEntity, boolean>>;

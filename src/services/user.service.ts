@@ -9,6 +9,7 @@ import { EncryptionAdapter } from "@src/adapters/encryption.adapter";
 import { Session } from "@domain/interfaces";
 import { UserStatus } from "@src/domain/enums";
 import { EmailAdaptor } from "@src/adapters/email.adaptor";
+import { Not } from "typeorm";
 
 @injectable()
 export class UserService implements IUserService {
@@ -63,6 +64,54 @@ export class UserService implements IUserService {
     }
 
     return user;
+  }
+
+  public async updateUser (session: Session, userDataDTO: TUserUpdateInput): Promise<void> {
+    const { userId } = session;
+
+    const userData: TUserUpdateInput = {};
+
+    if (userDataDTO.email) userData.email = userDataDTO.email;
+    if (userDataDTO.name) userData.name = userDataDTO.name;
+
+    const withoutFieldToUpdate = Object.keys(userData).length === 0;
+    if (withoutFieldToUpdate) throw new BadRequest(Errors.INVALID_PARAMS);
+
+    if (userData.email && !validateEmail(userData.email)) throw new BadRequest(Errors.EMAIL_INVALID);;
+
+    const user = await this.userRepository.selectOne(
+      { id: userId },
+      { name: true, email: true }
+    );
+
+    if (!user) throw new BadRequest(Errors.USER_NOT_FOUND);
+
+    const isSameUserData = Object.keys(userData).every((key: string): boolean => {
+      const keyField = key as unknown as keyof TUserUpdateInput;
+      return userData[keyField] === user[keyField];
+    });
+
+    if (isSameUserData) throw new BadRequest(Errors.USER_DATA_SENT_IS_SAME_AS_ACTUAL_DATA);
+
+    if (userData.email && userData.email !== user.email) {
+      const emailAlreadyUsed = await this.userRepository.selectOne({ email: userData.email, id: Not(user.id) });
+      if (emailAlreadyUsed) throw new BadRequest(Errors.USER_ALREADY_CREATED);
+    }
+
+    const userNewData: TUserUpdateInput = {
+      ...(userData.name && { name: userData.name }),
+    };
+
+    if (userData.email) {
+      const { code, codeHash } = this.generateEmailVerificationCode();
+      await this.sendUserEmailVerificationCode(userData.email, code);
+
+      userNewData.email = userData.email;
+      userNewData.status = UserStatus.PENDING_VALIDATION;
+      userNewData.verificationCode = codeHash;
+    }
+
+    await this.userRepository.update(userId, userNewData);
   }
 
   public async validateEmail (session: Session, verificationCode: string): Promise<void> {

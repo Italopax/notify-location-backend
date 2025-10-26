@@ -16,7 +16,6 @@ export class AuthController extends BaseHttpController implements interfaces.Con
   @httpPost('/login')
   private async login (
     @requestBody() loginInfos: LoginCredentials,
-    _response: Response,
   ): Promise<LoginOutput> {
     const authInfos: LoginCredentials = {
       email: loginInfos.email,
@@ -29,7 +28,6 @@ export class AuthController extends BaseHttpController implements interfaces.Con
   @httpPost('/refresh-token')
   private async refreshToken (
     @requestBody() { refreshToken }: { refreshToken: string },
-    _response: Response,
   ): Promise<RefreshTokenOutput> {
     return this.authService.refreshAccessToken(refreshToken);
   }

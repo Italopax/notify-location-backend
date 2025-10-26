@@ -5,7 +5,6 @@ import { TYPES } from "@utils/inversify/inversify-types";
 import { IUserRepository } from "@src/database/repositories/interface/user.interface";
 import { JwtAdapter } from "@src/adapters/jwt.adapter";
 
-
 export const auth = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { authorization } = request.headers;

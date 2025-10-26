@@ -33,15 +33,15 @@ export class UserService implements IUserService {
     }
 
     const hashPassword = this.encryptionAdapter.generateHash(userData.password);
-    const verificationCode = this.generateEmailVerificationCode();
+    const { code, codeHash } = this.generateEmailVerificationCode();
     
-    await this.sendUserEmailVerificationCode(userData.email, verificationCode);
+    await this.sendUserEmailVerificationCode(userData.email, code);
 
     return this.userRepository.create(
       {
         ...userData,
         status: UserStatus.PENDING_VALIDATION,
-        verificationCode,
+        verificationCode: codeHash,
         password: hashPassword,
       },
       { name: true, email: true, status: true }
@@ -77,7 +77,8 @@ export class UserService implements IUserService {
 
     if (user.status !== UserStatus.PENDING_VALIDATION) throw new BadRequest(Errors.USER_CANT_VALIDATE_EMAIL_ON_THIS_STATUS);
 
-    if (user.verificationCode !== verificationCode) throw new BadRequest(Errors.INCORRECT_CODE);
+    const verificationCodeValid = user.verificationCode !== this.encryptionAdapter.generateHash(verificationCode);
+    if (verificationCodeValid) throw new BadRequest(Errors.INCORRECT_CODE);
 
     await this.userRepository.update(
       user.id,
@@ -100,11 +101,11 @@ export class UserService implements IUserService {
  
     if (user.status !== UserStatus.PENDING_VALIDATION) throw new BadRequest(Errors.CANT_SEND_VERIFICATION_CODE_ON_THIS_STATUS);
 
-    const verificationCode = this.generateEmailVerificationCode();
+    const { code, codeHash } = this.generateEmailVerificationCode();
 
-    await this.sendUserEmailVerificationCode(user.email, verificationCode);
+    await this.sendUserEmailVerificationCode(user.email, code);
 
-    await this.userRepository.update(user.id, { verificationCode });
+    await this.userRepository.update(user.id, { verificationCode: codeHash });
   }
 
   public async removeUser (session: Session): Promise<void> {
@@ -142,8 +143,14 @@ export class UserService implements IUserService {
     }
   }
 
-  private generateEmailVerificationCode(): string {
-    return String(Math.floor(Math.random() * 1000000));
+  private generateEmailVerificationCode(): { code: string, codeHash: string } {
+    const verificationCode = String(Math.floor(Math.random() * 1000000));
+    const verificationCodeHash = this.encryptionAdapter.generateHash(verificationCode);
+
+    return {
+      code: verificationCode,
+      codeHash: verificationCodeHash
+    };
   }
 
   private async sendUserEmailVerificationCode(userEmail: string, verificationCode: string) {

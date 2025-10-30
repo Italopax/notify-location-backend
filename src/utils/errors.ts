@@ -9,6 +9,7 @@ export enum Errors {
   USER_OR_PASSWORD_INVALID = "Usuário ou senha incorretos.",
   INVALID_PASSWORD = "Senha incorreta.",
   USER_CANT_VALIDATE_EMAIL_ON_THIS_STATUS = "Usuário não pode validar seu email estando neste estatus.",
+  USER_CANT_RECOVERY_PASSWORD_ON_THIS_STATUS = "Usuário não pode realizar a recuperação de senha neste estatus.",
   INVALID_USER_STATUS = "Não é possível acessar esta funcionalidade no estatus atual.",
   INCORRECT_CODE = "Código incorreto.",
   INVALID_DATA_FORMAT = "Formato incorreto das informações.",

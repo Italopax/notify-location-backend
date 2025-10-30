@@ -1,6 +1,6 @@
 import { Session } from "@src/domain/interfaces";
 import { TUserCreateInput, TUserModel, TUserUpdateInput } from "@src/domain/models/user.model";
-import { ChangePasswordDTO } from "@src/domain/types";
+import { ChangePasswordDTO, RecoveryPasswordDTO } from "@src/domain/types";
 
 export interface IUserService {
   createUser (userData: TUserCreateInput): Promise<Partial<TUserModel>>;
@@ -11,4 +11,6 @@ export interface IUserService {
   validateEmail (session: Session, verificationCode: string): Promise<void>;
   resendVerificationCode (session: Session): Promise<void>;
   removeUser (session: Session): Promise<void>;
+  sendRecoveryPasswordCode (session: Session, email: string): Promise<void>;
+  recoveryPassword (sesion: Session, { email, verificationCode, newPassword }: RecoveryPasswordDTO): Promise<void>;
 }

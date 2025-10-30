@@ -7,7 +7,7 @@ import { inject } from "inversify";
 import { BaseHttpController, controller, httpDelete, httpGet, httpPatch, httpPost, httpPut, interfaces, request, requestBody } from "inversify-express-utils";
 import httpStatus from "http-status";
 import { StatusCodeResult } from "inversify-express-utils/lib/cjs/results";
-import { ChangePasswordDTO } from "@src/domain/types";
+import { ChangePasswordDTO, RecoveryPasswordDTO } from "@src/domain/types";
 import { validateUserStatus } from "@src/utils/middlewares/validateUserStatus";
 
 @controller('/user')
@@ -89,6 +89,24 @@ export class UserController extends BaseHttpController implements interfaces.Con
     @request() { session }: Request,
   ): Promise<StatusCodeResult> {
     await this.userService.removeUser(session);
+    return this.statusCode(httpStatus.NO_CONTENT);
+  }
+
+  @httpPost('/send-recovery-password-code')
+  private async sendRecoveryPasswordCode (
+    @request() { session }: Request,
+    @requestBody() { email }: { email: string }
+  ): Promise<StatusCodeResult> {
+    await this.userService.sendRecoveryPasswordCode(session, email);
+    return this.statusCode(httpStatus.NO_CONTENT);
+  }
+
+  @httpPost('/recovery-password')
+  private async recoveryPassword (
+    @request() { session }: Request,
+    @requestBody() { email, newPassword, verificationCode }: RecoveryPasswordDTO
+  ): Promise<StatusCodeResult> {
+    await this.userService.recoveryPassword(session, { email, newPassword, verificationCode });
     return this.statusCode(httpStatus.NO_CONTENT);
   }
 }

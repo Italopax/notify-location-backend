@@ -10,7 +10,7 @@ import { Session } from "@domain/interfaces";
 import { UserStatus } from "@src/domain/enums";
 import { EmailAdaptor } from "@src/adapters/email.adaptor";
 import { Not } from "typeorm";
-import { ChangePasswordDTO } from "@src/domain/types";
+import { ChangePasswordDTO, RecoveryPasswordDTO } from "@src/domain/types";
 
 @injectable()
 export class UserService implements IUserService {
@@ -149,8 +149,8 @@ export class UserService implements IUserService {
 
     if (user.status !== UserStatus.PENDING_VALIDATION) throw new BadRequest(Errors.USER_CANT_VALIDATE_EMAIL_ON_THIS_STATUS);
 
-    const verificationCodeValid = user.verificationCode !== this.encryptionAdapter.generateHash(verificationCode);
-    if (verificationCodeValid) throw new BadRequest(Errors.INCORRECT_CODE);
+    const verificationCodeInvalid = user.verificationCode !== this.encryptionAdapter.generateHash(verificationCode);
+    if (verificationCodeInvalid) throw new BadRequest(Errors.INCORRECT_CODE);
 
     await this.userRepository.update(
       user.id,
@@ -193,6 +193,41 @@ export class UserService implements IUserService {
     if (!user) throw new BadRequest(Errors.USER_NOT_FOUND);
 
     await this.userRepository.softDelete(user.id);
+  }
+
+  public async sendRecoveryPasswordCode (_session: Session, email: string): Promise<void> {
+    if (!email) throw new BadRequest(Errors.INVALID_PARAMS);
+  
+    if (!validateEmail(email)) throw new BadRequest(Errors.EMAIL_INVALID)
+
+    const user = await this.userRepository.selectOne({ email }, { id: true, email: true });
+ 
+    if (!user) throw new BadRequest(Errors.USER_NOT_FOUND);
+
+    const { code, codeHash } = this.generateEmailVerificationCode();
+
+    await this.sendUserEmailVerificationCode(user.email, code);
+
+    await this.userRepository.update(user.id, { verificationCode: codeHash, status: UserStatus.PENDING_VALIDATION });
+  }
+
+  public async recoveryPassword (sesion: Session, { email, verificationCode, newPassword }: RecoveryPasswordDTO): Promise<void> {
+    if (!email || !verificationCode || !newPassword) throw new BadRequest(Errors.INVALID_PARAMS);
+
+    if (!validateEmail(email)) throw new BadRequest(Errors.EMAIL_INVALID)
+
+    const user = await this.userRepository.selectOne({ email }, { id: true, verificationCode: true, status: true });
+
+    if (!user) throw new BadRequest(Errors.USER_NOT_FOUND);
+
+    if (user.status !== UserStatus.PENDING_VALIDATION) throw new BadRequest(Errors.USER_CANT_RECOVERY_PASSWORD_ON_THIS_STATUS);
+
+    const verificationCodeInvalid = user.verificationCode !== this.encryptionAdapter.generateHash(verificationCode);
+    if (verificationCodeInvalid) throw new BadRequest(Errors.INCORRECT_CODE);
+
+    const newPasswordHash = this.encryptionAdapter.generateHash(newPassword);
+
+    await this.userRepository.update(user.id, { password: newPasswordHash });
   }
 
   private async sendEmail({

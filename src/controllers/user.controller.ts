@@ -4,9 +4,11 @@ import { TYPES } from "@src/utils/inversify/inversify-types";
 import { auth } from "@src/utils/middlewares/auth";
 import { Request } from "express";
 import { inject } from "inversify";
-import { BaseHttpController, controller, httpDelete, httpGet, httpPost, httpPut, interfaces, request, requestBody } from "inversify-express-utils";
+import { BaseHttpController, controller, httpDelete, httpGet, httpPatch, httpPost, httpPut, interfaces, request, requestBody } from "inversify-express-utils";
 import httpStatus from "http-status";
 import { StatusCodeResult } from "inversify-express-utils/lib/cjs/results";
+import { ChangePasswordDTO } from "@src/domain/types";
+import { validateUserStatus } from "@src/utils/middlewares/validateUserStatus";
 
 @controller('/user')
 export class UserController extends BaseHttpController implements interfaces.Controller {
@@ -48,6 +50,20 @@ export class UserController extends BaseHttpController implements interfaces.Con
     };
 
     await this.userService.updateUser(session, bodyInfos);
+    return this.statusCode(httpStatus.NO_CONTENT);
+  }
+
+  @httpPatch('/change-password', auth, validateUserStatus)
+  private async changePassword (
+    @request() { session }: Request,
+    @requestBody() { actualPassword, newPassword }: ChangePasswordDTO,
+  ): Promise<StatusCodeResult> {
+    const bodyInfos: ChangePasswordDTO = {
+      newPassword,
+      actualPassword, 
+    };
+
+    await this.userService.changePassword(session, bodyInfos);
     return this.statusCode(httpStatus.NO_CONTENT);
   }
 

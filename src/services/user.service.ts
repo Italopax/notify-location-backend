@@ -10,6 +10,7 @@ import { Session } from "@domain/interfaces";
 import { UserStatus } from "@src/domain/enums";
 import { EmailAdaptor } from "@src/adapters/email.adaptor";
 import { Not } from "typeorm";
+import { ChangePasswordDTO } from "@src/domain/types";
 
 @injectable()
 export class UserService implements IUserService {
@@ -112,6 +113,28 @@ export class UserService implements IUserService {
     }
 
     await this.userRepository.update(userId, userNewData);
+  }
+
+  public async changePassword (session: Session, changePasswordDTO: ChangePasswordDTO): Promise<void> {
+    const { userId } = session;
+
+    if (!changePasswordDTO.actualPassword || !changePasswordDTO.newPassword) throw new BadRequest(Errors.INVALID_PARAMS);
+
+    const user = await this.userRepository.selectOne(
+      { id: userId },
+      { password: true },
+    );
+
+    if (!user) throw new BadRequest(Errors.USER_NOT_FOUND);
+
+    const actualPasswordSent = this.encryptionAdapter.generateHash(changePasswordDTO.actualPassword);
+    const actualPasswordIsIncorrect = user.password !== actualPasswordSent;
+
+    if (actualPasswordIsIncorrect) throw new BadRequest(Errors.INVALID_PASSWORD);
+
+    const newPasswordHash = this.encryptionAdapter.generateHash(changePasswordDTO.newPassword);
+
+    await this.userRepository.update(userId, { password: newPasswordHash });
   }
 
   public async validateEmail (session: Session, verificationCode: string): Promise<void> {

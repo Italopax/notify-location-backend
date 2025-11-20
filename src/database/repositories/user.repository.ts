@@ -49,4 +49,8 @@ export class UserRepository implements IUserRepository {
   public async softDelete(userId: string): Promise<void> {
     await this.repository.softDelete({ id: userId });
   }
+
+  public async checkUserByWhere(user: Partial<TUserModel>): Promise<boolean> {
+    return this.repository.exists({ where: user });
+  }
 }

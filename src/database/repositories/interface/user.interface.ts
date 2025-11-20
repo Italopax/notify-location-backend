@@ -9,4 +9,5 @@ export interface IUserRepository {
   create(user: Partial<TUserModel>, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
   update(userId: string, updateData: Partial<TUserModel>, selectAttributes?: SelectUserAttributes): Promise<TUserModel>;
   softDelete(userId: string): Promise<void>;
+  checkUserByWhere(user: Partial<TUserModel>): Promise<boolean>;
 }

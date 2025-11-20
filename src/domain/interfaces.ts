@@ -19,7 +19,7 @@ export interface Session {
 };
 
 export interface EmailData {
-  userEmail: string;
+  destinyEmail: string;
   title: string;
   text: string;
 }

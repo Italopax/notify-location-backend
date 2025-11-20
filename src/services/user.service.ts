@@ -6,9 +6,8 @@ import { IUserRepository } from "@src/database/repositories/interface/user.inter
 import { BadRequest, Errors } from "@src/utils/errors";
 import { validateEmail } from "@src/utils";
 import { EncryptionAdapter } from "@src/adapters/encryption.adapter";
-import { Session } from "@domain/interfaces";
+import { EmailData, Session } from "@domain/interfaces";
 import { UserStatus } from "@src/domain/enums";
-import { EmailAdaptor } from "@src/adapters/email.adaptor";
 import { Not } from "typeorm";
 import { ChangePasswordDTO, RecoveryPasswordDTO } from "@src/domain/types";
 import { IEmailPublisher } from "@src/queues/producers/interfaces/emailProducer.interface";
@@ -18,7 +17,6 @@ export class UserService implements IUserService {
   constructor(
     @inject(TYPES.repositories.USER_REPOSITORY) private readonly userRepository: IUserRepository,
     @inject(TYPES.adapters.ENCRYPTION_ADAPTER) private readonly encryptionAdapter: EncryptionAdapter,
-    @inject(TYPES.adapters.EMAIL_ADAPTER) private readonly emailAdapter: EmailAdaptor,
     @inject(TYPES.queue.producers.EMAIL_PUBLISHER) private readonly emailPublisher: IEmailPublisher,
   ) {}
 
@@ -69,13 +67,8 @@ export class UserService implements IUserService {
     return user;
   }
 
-  public async updateUser (session: Session, userDataDTO: TUserUpdateInput): Promise<void> {
+  public async updateUser (session: Session, userData: TUserUpdateInput): Promise<void> {
     const { userId } = session;
-
-    const userData: TUserUpdateInput = {};
-
-    if (userDataDTO.email) userData.email = userDataDTO.email;
-    if (userDataDTO.name) userData.name = userDataDTO.name;
 
     const withoutFieldToUpdate = Object.keys(userData).length === 0;
     if (withoutFieldToUpdate) throw new BadRequest(Errors.INVALID_PARAMS);
@@ -233,17 +226,13 @@ export class UserService implements IUserService {
   }
 
   private async sendEmail({
-    userEmail,
+    destinyEmail,
     title,
     text,
-  }: {
-    userEmail: string;
-    title: string;
-    text: string;
-  }): Promise<void> {
+  }: EmailData): Promise<void> {
     try {
       await this.emailPublisher.publishEmailTask({
-        userEmail,
+        destinyEmail,
         title,
         text,
       });
@@ -264,7 +253,7 @@ export class UserService implements IUserService {
 
   private async sendUserEmailVerificationCode(userEmail: string, verificationCode: string) {
     await this.sendEmail({
-      userEmail,
+      destinyEmail: userEmail,
       title: 'Email de verificação de criação de conta.',
       text: `Seu código de verificação é: ${verificationCode}`,
     });

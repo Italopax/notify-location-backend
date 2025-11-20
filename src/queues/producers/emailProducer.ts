@@ -11,18 +11,18 @@ export class EmailPublisher implements IEmailPublisher {
     @inject(TYPES.queue.QUEUE_SERVER) private readonly queueServer: IQueueServer,
   ) {}
 
-  public async publishEmailTask({ text, title, userEmail }: EmailData): Promise<void> {
+  public async publishEmailTask({ text, title, destinyEmail }: EmailData): Promise<void> {
     try {
       const { channel } = await this.queueServer.connect();
       const queueName = Queues.EMAIL_NOTIFICATIONS;
 
       await channel.assertQueue(queueName, { durable: true });
 
-      const queueItemData = JSON.stringify({ text, title, userEmail });
+      const queueItemData = JSON.stringify({ text, title, destinyEmail });
 
       channel.sendToQueue(queueName, Buffer.from(queueItemData), { persistent: true });
     } catch (error) {
-      console.error(`ERROR TO PUBLISH ITEM: ${error.message}`, { text, title, userEmail });
+      console.error(`ERROR TO PUBLISH ITEM: ${error.message}`, { text, title, destinyEmail });
     }
   }
 }

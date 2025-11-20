@@ -7,7 +7,7 @@ export class EmailAdaptor {
   private ConstantEnvs = getEnv();
 
   public async sendEmail({
-    userEmail,
+    destinyEmail,
     title,
     text,
   }: EmailData): Promise<void> {
@@ -31,7 +31,7 @@ export class EmailAdaptor {
 
     const emailInfos = {
       from: email,
-      to: userEmail,
+      to: destinyEmail,
       subject: title,
       text: text,
     };

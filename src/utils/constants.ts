@@ -25,6 +25,11 @@ export class Constants {
     secure: boolean;
   }
 
+  public queue: {
+    baseUrl: string;
+    consumersPrefetch: number;
+  }
+
   constructor(props: Record<string, string> ) {
     this.debbug = props.DEBBUG === 'true',
     this.corsOriginsAllowed = props.CORS_ORIGINS_ALLOWED,
@@ -50,6 +55,11 @@ export class Constants {
       host: props.EMAIL_SENDER_HOST,
       port: Number(props.EMAIL_SENDER_PORT),
       secure: Boolean(props.EMAIL_SENDER_SECURE),
+    }
+
+    this.queue = {
+      baseUrl: props.QUEUE_BASE_URL,
+      consumersPrefetch: Number(props.QUEUE_CONSUMERS_PREFETCH) || 1,
     }
   }
 }

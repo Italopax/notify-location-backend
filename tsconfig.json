@@ -21,6 +21,7 @@
       "@database/*": ["src/database/*"],
       "@domain/*": ["src/domain/*"],
       "@utils/*": ["src/utils/*"],
+      "@queues/*": ["src/queues/*"],
     }
   },
   "include": ["src"],

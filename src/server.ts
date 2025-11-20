@@ -9,6 +9,8 @@ import { container } from "./utils/inversify/inversify.config";
 import { InversifyExpressServer } from "inversify-express-utils";
 import { errorHandler } from './utils/errors';
 import httpStatus from "http-status";
+import { TYPES } from './utils/inversify/inversify-types';
+import { IEmailConsumer } from './queues/consumers/interfaces/emailConsumer.interface';
 
 export class Server {
   static async initServer() {
@@ -30,7 +32,10 @@ export class Server {
       });
     });
 
-    const app = server.build()
+    const app = server.build();
+
+    const emailQueueConsumer = container.get<IEmailConsumer>(TYPES.queue.consumers.EMAIL_CONSUMER); // fazer com que o service não saiba quais consumers existem 
+    await emailQueueConsumer.start();
 
     const port = getEnv().customAppPort;
     app.listen(port, () => {

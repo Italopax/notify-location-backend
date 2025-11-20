@@ -1,3 +1,5 @@
+import { Channel, ChannelModel } from 'amqplib';
+
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -20,4 +22,9 @@ export interface EmailData {
   userEmail: string;
   title: string;
   text: string;
+}
+
+export interface QueueConnectReturn {
+  channel: Channel;
+  connection: ChannelModel;
 }

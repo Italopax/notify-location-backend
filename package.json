@@ -11,6 +11,7 @@
     "create:migration": "npx typeorm migration:create ./src/database/migrations/$npm_config_name"
   },
   "dependencies": {
+    "amqplib": "^0.10.9",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "dotenv": "^17.2.3",
@@ -24,6 +25,7 @@
     "typeorm": "^0.3.27"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.8",
     "@types/cors": "^2.8.19",
     "@types/crypto-js": "^4.2.2",
     "@types/express": "^5.0.3",

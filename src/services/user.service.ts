@@ -11,6 +11,7 @@ import { UserStatus } from "@src/domain/enums";
 import { EmailAdaptor } from "@src/adapters/email.adaptor";
 import { Not } from "typeorm";
 import { ChangePasswordDTO, RecoveryPasswordDTO } from "@src/domain/types";
+import { IEmailPublisher } from "@src/queues/producers/interfaces/emailProducer.interface";
 
 @injectable()
 export class UserService implements IUserService {
@@ -18,6 +19,7 @@ export class UserService implements IUserService {
     @inject(TYPES.repositories.USER_REPOSITORY) private readonly userRepository: IUserRepository,
     @inject(TYPES.adapters.ENCRYPTION_ADAPTER) private readonly encryptionAdapter: EncryptionAdapter,
     @inject(TYPES.adapters.EMAIL_ADAPTER) private readonly emailAdapter: EmailAdaptor,
+    @inject(TYPES.queue.producers.EMAIL_PUBLISHER) private readonly emailPublisher: IEmailPublisher,
   ) {}
 
   public async createUser (userData: TUserCreateInput): Promise<Partial<TUserModel>> {
@@ -240,11 +242,11 @@ export class UserService implements IUserService {
     text: string;
   }): Promise<void> {
     try {
-      await this.emailAdapter.sendEmail({
+      await this.emailPublisher.publishEmailTask({
         userEmail,
         title,
         text,
-      })
+      });
     } catch (error) {
       throw new BadRequest(Errors.EMAIL_SENDING_ERROR);
     }

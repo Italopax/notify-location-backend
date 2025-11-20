@@ -15,3 +15,9 @@ export interface RefreshTokenOutput {
 export interface Session {
   userId: string;
 };
+
+export interface EmailData {
+  userEmail: string;
+  title: string;
+  text: string;
+}

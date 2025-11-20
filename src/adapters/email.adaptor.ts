@@ -1,3 +1,4 @@
+import { EmailData } from "@src/domain/interfaces";
 import { getEnv } from "@src/utils/constants";
 import { BadRequest, Errors } from "@src/utils/errors";
 import nodemailer from "nodemailer";
@@ -9,11 +10,7 @@ export class EmailAdaptor {
     userEmail,
     title,
     text,
-  }: {
-    userEmail: string;
-    title: string;
-    text: string;
-  }): Promise<void> {
+  }: EmailData): Promise<void> {
     const email = this.ConstantEnvs.email.user;
     const emailPassword = this.ConstantEnvs.email.password;
     const host = this.ConstantEnvs.email.host;
@@ -41,9 +38,9 @@ export class EmailAdaptor {
 
     transporter.sendMail(emailInfos, (error, info) => {
       if (error) {
-        console.log("ERRO AO ENVIAR EMAIL:", error);
+        console.error("ERROR TO SEND EMAIL:", error);
       } else {
-        console.log("EMAIL ENVIADO COM SUCESSO:", info.response);
+        console.log("EMAIL SENT:", info.response);
       }
     });
   }

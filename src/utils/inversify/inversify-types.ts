@@ -3,6 +3,7 @@ export const TYPES = {
   services: {
     USER_SERVICE: 'USER_SERVICE',
     AUTH_SERVICE: 'AUTH_SERVICE',
+    LOCATION_SERVICE: 'LOCATION_SERVICE',
   },
   repositories: {
     USER_REPOSITORY: 'USER_REPOSITORY',

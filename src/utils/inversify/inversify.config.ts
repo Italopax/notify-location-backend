@@ -18,11 +18,15 @@ import { EmailPublisher } from "@src/queues/producers/emailProducer";
 import { EmailConsumer } from "@src/queues/consumers/emailConsumer";
 import { IEmailConsumer } from "@src/queues/consumers/interfaces/emailConsumer.interface";
 import { IEmailPublisher } from "@src/queues/producers/interfaces/emailProducer.interface";
+import { ILocationService } from "@src/services/interface/location.interface";
+import { LocationService } from "@src/services/location.service";
 
 const container = new Container();
 
 container.bind<IUserRepository>(TYPES.repositories.USER_REPOSITORY).to(UserRepository).inSingletonScope();
 container.bind<IUserService>(TYPES.services.USER_SERVICE).to(UserService).inSingletonScope();
+
+container.bind<ILocationService>(TYPES.services.LOCATION_SERVICE).to(LocationService).inSingletonScope();
 
 const { DatabaseProvider } = require('../../database/config/index');
 container.bind<DataSource>(TYPES.DATABASE_SOURCE).toConstantValue(DatabaseProvider.getDataSource());

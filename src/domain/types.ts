@@ -8,3 +8,8 @@ export type RecoveryPasswordDTO = {
   verificationCode: string;
   newPassword: string;
 }
+
+export interface SendLocationDTO {
+  latitude: string;
+  longitude: string;
+}
